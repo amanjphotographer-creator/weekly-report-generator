@@ -282,5 +282,5 @@ app.post("/generate", async (req, res) => {
   }
 });
 
-const PORT = 4040;
+const PORT = process.env.PORT || 4040;
 app.listen(PORT, () => console.log(`Weekly Report Generator → http://localhost:${PORT}`));
