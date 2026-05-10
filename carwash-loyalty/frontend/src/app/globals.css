@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --navy-900: #060D1A;
+  --navy-800: #0A1628;
+  --navy-700: #0F2040;
+  --navy-400: #2E5FAC;
+  --white: #FFFFFF;
+  --cream: #F8F6F1;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--navy-900);
+  color: var(--white);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Stamp pulse animation for free wash */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(46, 95, 172, 0.6); }
+  50%       { box-shadow: 0 0 28px rgba(46, 95, 172, 1.0); }
+}
+
+.stamp-filled {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Slide-up panel animation */
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.slide-up {
+  animation: slide-up 0.3s ease-out forwards;
+}
