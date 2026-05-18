@@ -22,9 +22,8 @@
   <main>
     <form id="reportForm" novalidate>
 
-      <!-- ── SECTION 1: Employee Details ── -->
       <section class="card">
-        <h2><span class="num">1</span> Employee Details</h2>
+        <h2><span class="num">1</span> Your Details</h2>
         <div class="grid-2">
           <div class="field">
             <label for="name">Full Name <span class="req">*</span></label>
@@ -38,122 +37,27 @@
             <label for="position">Position / Role <span class="req">*</span></label>
             <input id="position" name="position" type="text" placeholder="e.g. Visual Media Marketing Associate" required />
           </div>
-          <div class="field">
-            <label for="department">Department</label>
-            <input id="department" name="department" type="text" placeholder="e.g. Marketing" />
-          </div>
-          <div class="field">
-            <label for="hours">Hours Worked</label>
-            <input id="hours" name="hours" type="text" placeholder="e.g. 35 hours (contractual)" />
-          </div>
-          <div class="field">
-            <label for="meetings">Meetings / Calls Attended</label>
-            <input id="meetings" name="meetings" type="text" placeholder="e.g. 1 online team meeting" />
-          </div>
-          <div class="field">
-            <label for="absence">Absence / Leave / Other</label>
-            <input id="absence" name="absence" type="text" placeholder="e.g. N/A" />
-          </div>
-          <div class="field">
-            <label for="satisfaction">Satisfaction (1–10)</label>
-            <div class="rating-wrap">
-              <input id="satisfaction" name="satisfaction" type="range" min="1" max="10" value="8" oninput="document.getElementById('satVal').textContent = this.value" />
-              <span class="rating-val" id="satVal">8</span>
-            </div>
-          </div>
         </div>
       </section>
 
-      <!-- ── SECTION 2: Executive Summary ── -->
       <section class="card">
-        <h2><span class="num">2</span> Executive Summary</h2>
-        <p class="hint">Write 3–5 sentences summarising the week. This will appear verbatim in the report.</p>
+        <h2><span class="num">2</span> Weekly Notes</h2>
+        <p class="hint">Paste or type anything about your week — tasks done, meetings, challenges, plans. The AI structures it into the full report automatically.</p>
         <div class="field">
-          <textarea id="summary" name="summary" rows="5" placeholder="This week I focused on…"></textarea>
+          <textarea id="rawNotes" name="rawNotes" rows="16" placeholder="e.g.
+
+Managed social media across Instagram, LinkedIn and TikTok. Daily posting and responding to comments.
+
+Started website redesign research — reviewed current site structure and UX issues.
+
+Team meeting on Monday to discuss content direction.
+
+Need management approval for the boosting budget.
+
+Next week: focus on website redesign and continue social media."></textarea>
         </div>
       </section>
 
-      <!-- ── SECTION 3: Key Activities ── -->
-      <section class="card">
-        <h2><span class="num">3</span> Key Activities Completed</h2>
-        <p class="hint">One activity per line. Each line becomes a bullet point.</p>
-        <div class="field">
-          <textarea id="activities" name="activities" rows="7" placeholder="Attended team meeting and discussed content direction&#10;Reviewed social media posts across all platforms&#10;Started planning for website redesign"></textarea>
-        </div>
-      </section>
-
-      <!-- ── SECTION 4: Department Updates ── -->
-      <section class="card">
-        <h2><span class="num">4</span> Department / Project Updates</h2>
-        <p class="hint">One item per line in each box. Leave blank if not applicable.</p>
-
-        <div class="field">
-          <label>Marketing &amp; Social Media</label>
-          <textarea id="socialMedia" name="socialMedia" rows="5" placeholder="Improved content consistency across Instagram, LinkedIn and TikTok&#10;Responded to follower inquiries daily&#10;Tracked analytics and recorded performance"></textarea>
-        </div>
-
-        <div class="field">
-          <label>Projects &amp; Other Work</label>
-          <textarea id="projects" name="projects" rows="5" placeholder="Initiated research for website redesign&#10;Assessed current site structure and UX"></textarea>
-        </div>
-
-        <div class="field">
-          <label>Meetings &amp; Calls (details)</label>
-          <textarea id="meetingNotes" name="meetingNotes" rows="4" placeholder="Weekly team meeting — discussed content calendar and upcoming campaigns"></textarea>
-        </div>
-      </section>
-
-      <!-- ── SECTION 5: Collaboration ── -->
-      <section class="card">
-        <h2><span class="num">5</span> Collaboration With Colleagues</h2>
-        <p class="hint">One item per line. Name colleagues and what was discussed or completed together.</p>
-        <div class="field">
-          <textarea id="collaboration" name="collaboration" rows="4" placeholder="Coordinated with the marketing team on campaign scheduling&#10;Discussed website brief with management"></textarea>
-        </div>
-      </section>
-
-      <!-- ── SECTION 6: Achievements ── -->
-      <section class="card">
-        <h2><span class="num">6</span> Results / Achievements</h2>
-        <p class="hint">Add rows for each completed task and its measurable result or evidence.</p>
-        <div id="achieveRows">
-          <div class="achieve-row">
-            <input type="text" class="achieve-task" placeholder="Task / Area" />
-            <input type="text" class="achieve-result" placeholder="Result / Evidence" />
-            <button type="button" class="btn-remove" onclick="removeAchieve(this)" title="Remove">✕</button>
-          </div>
-        </div>
-        <button type="button" class="btn-add" onclick="addAchieve()">+ Add row</button>
-      </section>
-
-      <!-- ── SECTION 7: Challenges ── -->
-      <section class="card">
-        <h2><span class="num">7</span> Challenges / Delays</h2>
-        <p class="hint">One item per line. Leave blank if none.</p>
-        <div class="field">
-          <textarea id="challenges" name="challenges" rows="4" placeholder="Boosting strategy pending budget approval&#10;Website redesign on hold until brief is confirmed"></textarea>
-        </div>
-      </section>
-
-      <!-- ── SECTION 8: Next Actions ── -->
-      <section class="card">
-        <h2><span class="num">8</span> Next Actions for Next Week</h2>
-        <p class="hint">One action per line.</p>
-        <div class="field">
-          <textarea id="nextActions" name="nextActions" rows="6" placeholder="Focus on website redesign — structure, layout and visual direction&#10;Continue daily social media management&#10;Follow up on boosting strategy once approved"></textarea>
-        </div>
-      </section>
-
-      <!-- ── SECTION 9: Notes for Management ── -->
-      <section class="card">
-        <h2><span class="num">9</span> Notes for Management</h2>
-        <p class="hint">Items requiring approval, budget, feedback, or decision. One item per line.</p>
-        <div class="field">
-          <textarea id="managementNotes" name="managementNotes" rows="4" placeholder="Boosting &amp; contact growth strategy — budget approval needed&#10;Website redesign — brief and timeline confirmation required"></textarea>
-        </div>
-      </section>
-
-      <!-- ── Generate ── -->
       <div class="generate-bar">
         <button type="submit" id="generateBtn" class="btn-generate">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
