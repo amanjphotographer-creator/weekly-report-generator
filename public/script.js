@@ -6,6 +6,23 @@ document.getElementById("weekEnding").valueAsDate = (() => {
   return d;
 })();
 
+function addAchieve() {
+  const row = document.createElement("div");
+  row.className = "achieve-row";
+  row.innerHTML = `
+    <input type="text" class="achieve-task"   placeholder="Task / Area" />
+    <input type="text" class="achieve-result" placeholder="Result / Evidence" />
+    <button type="button" class="btn-remove" onclick="removeAchieve(this)" title="Remove">✕</button>
+  `;
+  document.getElementById("achieveRows").appendChild(row);
+  row.querySelector("input").focus();
+}
+
+function removeAchieve(btn) {
+  const rows = document.querySelectorAll(".achieve-row");
+  if (rows.length > 1) btn.closest(".achieve-row").remove();
+}
+
 function setStatus(msg, cls) {
   const el = document.getElementById("status");
   el.textContent = msg;
@@ -16,22 +33,36 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = document.getElementById("generateBtn");
   btn.disabled = true;
-  setStatus("AI is writing your report…", "busy");
+  setStatus("Generating report…", "busy");
+
+  const achievements = Array.from(document.querySelectorAll(".achieve-row")).map(row => ({
+    task:   row.querySelector(".achieve-task").value.trim(),
+    result: row.querySelector(".achieve-result").value.trim(),
+  })).filter(r => r.task);
 
   const payload = {
-    name:       document.getElementById("name").value.trim(),
-    position:   document.getElementById("position").value.trim(),
-    weekEnding: document.getElementById("weekEnding").value,
-    rawNotes:   document.getElementById("rawNotes").value.trim(),
+    name:            document.getElementById("name").value.trim(),
+    weekEnding:      document.getElementById("weekEnding").value,
+    position:        document.getElementById("position").value.trim(),
+    department:      document.getElementById("department").value.trim(),
+    hours:           document.getElementById("hours").value.trim(),
+    meetings:        document.getElementById("meetings").value.trim(),
+    absence:         document.getElementById("absence").value.trim(),
+    satisfaction:    document.getElementById("satisfaction").value,
+    summary:         document.getElementById("summary").value.trim(),
+    activities:      document.getElementById("activities").value.trim(),
+    socialMedia:     document.getElementById("socialMedia").value.trim(),
+    projects:        document.getElementById("projects").value.trim(),
+    meetingNotes:    document.getElementById("meetingNotes").value.trim(),
+    collaboration:   document.getElementById("collaboration").value.trim(),
+    achievements,
+    challenges:      document.getElementById("challenges").value.trim(),
+    nextActions:     document.getElementById("nextActions").value.trim(),
+    managementNotes: document.getElementById("managementNotes").value.trim(),
   };
 
-  if (!payload.name || !payload.position || !payload.weekEnding) {
-    setStatus("Please fill in your name, position, and week ending.", "err");
-    btn.disabled = false;
-    return;
-  }
-  if (!payload.rawNotes) {
-    setStatus("Please paste your weekly notes.", "err");
+  if (!payload.name || !payload.weekEnding || !payload.position) {
+    setStatus("Please fill in Name, Week Ending, and Position.", "err");
     btn.disabled = false;
     return;
   }
@@ -56,7 +87,7 @@ document.getElementById("reportForm").addEventListener("submit", async (e) => {
     a.download = `Weekly_Report_${safeName}_${payload.weekEnding}.docx`;
     a.click();
     URL.revokeObjectURL(url);
-    setStatus("✓ Report downloaded!", "ok");
+    setStatus("✓ Report downloaded successfully!", "ok");
   } catch (err) {
     setStatus("Error: " + err.message, "err");
   } finally {

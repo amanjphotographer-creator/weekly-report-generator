@@ -1,7 +1,5 @@
-require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
   Header, Footer, AlignmentType, BorderStyle, WidthType,
@@ -9,12 +7,9 @@ const {
 } = require("docx");
 
 const app = express();
-app.use(express.json({ limit: "4mb" }));
+app.use(express.json({ limit: "2mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// ── Branding constants ────────────────────────────────────────────
 const BRAND_BLUE  = "1B3A6B";
 const ACCENT_BLUE = "2E5FAC";
 const LIGHT_BG    = "EBF0F8";
@@ -25,7 +20,6 @@ const A4_H        = 16838;
 const MARGIN      = 1080;
 const CONTENT_W   = A4_W - MARGIN * 2;
 
-// ── Helper builders ───────────────────────────────────────────────
 function hr() {
   return new Paragraph({
     border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: ACCENT_BLUE, space: 4 } },
@@ -114,46 +108,6 @@ function achieveRow(task, result, isHeader = false) {
   });
 }
 
-// ── Gemini extraction prompt ──────────────────────────────────────
-function buildPrompt(rawNotes, name, position, weekEnding) {
-  return `You are a professional report writer for Accel Capital Partners Ltd, a UK-based investment and management company.
-
-Extract and structure the following raw weekly notes into a professional report. Use UK English throughout. Do NOT invent information — only use what is explicitly or clearly implied in the notes. If a section has no relevant information, leave it as an empty string.
-
-Staff member details:
-- Name: ${name}
-- Position: ${position}
-- Week ending: ${weekEnding}
-
-Raw weekly notes:
-"""
-${rawNotes}
-"""
-
-Return ONLY a valid JSON object with exactly these fields (no markdown, no explanation, just raw JSON):
-
-{
-  "department": "Department name if mentioned, else empty string",
-  "hours": "Hours worked if mentioned, else empty string",
-  "meetings": "Meetings or calls attended if mentioned, else empty string",
-  "absence": "Any absence or leave if mentioned, else N/A",
-  "satisfaction": "Satisfaction rating 1-10 if mentioned, else 8",
-  "summary": "A polished 3-5 sentence executive summary of the week. Professional, confident tone.",
-  "activities": "Key activities completed, one per line. Short, action-focused bullet text (no bullet characters).",
-  "socialMedia": "Marketing and social media work done, one item per line. Empty string if none.",
-  "projects": "Projects and other work done, one item per line. Empty string if none.",
-  "meetingNotes": "Details of meetings and calls, one item per line. Empty string if none.",
-  "collaboration": "Collaboration with colleagues, one item per line. Empty string if none.",
-  "achievements": [
-    { "task": "Task or area name", "result": "Measurable result or evidence" }
-  ],
-  "challenges": "Challenges or delays, one per line. Empty string if none.",
-  "nextActions": "Planned actions for next week, one per line. Empty string if none.",
-  "managementNotes": "Items needing management attention, one per line. Empty string if none."
-}`;
-}
-
-// ── Document builder ──────────────────────────────────────────────
 function buildDoc(d) {
   const achieveRows = (d.achievements || [])
     .filter(r => r.task && r.task.trim())
@@ -302,25 +256,13 @@ function buildDoc(d) {
   });
 }
 
-// ── Generate endpoint ─────────────────────────────────────────────
 app.post("/generate", async (req, res) => {
   try {
-    const { name, position, weekEnding, rawNotes } = req.body;
-
-    if (!name || !position || !weekEnding || !rawNotes) {
-      return res.status(400).json({ error: "Name, position, week ending and notes are required." });
-    }
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
-    const result = await model.generateContent(buildPrompt(rawNotes, name, position, weekEnding));
-    const raw = result.response.text().trim().replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "").trim();
-    const structured = JSON.parse(raw);
-
-    const doc = buildDoc({ name, position, weekEnding, ...structured });
+    const doc = buildDoc(req.body);
     const buffer = await Packer.toBuffer(doc);
-    const safeName = name.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
-
-    res.setHeader("Content-Disposition", `attachment; filename="Weekly_Report_${safeName}_${weekEnding}.docx"`);
+    const safeName = (req.body.name || "Staff").replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
+    const dateSlug = (req.body.weekEnding || "").replace(/[^0-9-]/g, "") || "Report";
+    res.setHeader("Content-Disposition", `attachment; filename="Weekly_Report_${safeName}_${dateSlug}.docx"`);
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     res.send(buffer);
   } catch (err) {
