@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.local
+*.pkpass
+certs/apple/*.pem
+certs/apple/*.p12
+.next/
+dist/
